@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2023",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "skipLibCheck": true,
+    //"outDir": "./dist",
+    "rootDir": "~/"
+  },
+  "include": ["~/**/*.ts", "bin/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

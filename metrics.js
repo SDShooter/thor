@@ -1,9 +1,15 @@
 'use strict';
 
-var Stats = require('fast-stats').Stats
-  , colors = require('colors')
-  , sugar = require('sugar')
-  , table = require('tab');
+//var Stats = require('fast-stats').Stats
+//  , colors = require('colors')
+//  , sugar = require('sugar')
+//  , table = require('tab');
+import Stats from 'fast-stats'
+//import colors from 'colors'
+//import sugar from 'sugar'
+import table from 'tab'
+
+
 
 /**
  * Metrics collection and generation.
@@ -257,4 +263,5 @@ Metrics.prototype.summary = function summary() {
 //
 // Expose the metrics constructor.
 //
-module.exports = Metrics;
+//module.exports = Metrics;
+export default Metrics;

@@ -149,3 +149,14 @@ Latency              205     246     266     288     371     413     437     443
 ### License
 
 MIT
+
+
+./bin/thor --amount 3 --messages 1 -concurrent 2 --workers 3  ws://localhost:8000
+
+
+Change log
+v1.0.1
+--Updated deprecated and unsafe libraries
+--Changes to thor to facilitate library updates
+
+

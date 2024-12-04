@@ -1,16 +1,16 @@
 #!/usr/bin/env node
-'use strict';
-
-var Metrics = require('../metrics')
-  , colors = require('colors')
-  , async = require('async')
-  , path = require('path')
-  , os = require('os');
+'use strict'
+import {program as cli}  from 'commander'
+import Metrics from '../metrics.js'
+import path from 'path'
+import os from 'os'
+import Cluster from 'node:cluster'
+import { __dirname } from '../utils.js';
 
 //
 // Setup the Command-Line Interface.
 //
-var cli = require('commander');
+console.log(`PROCESS: ${process.argv.length}`);
 
 cli.usage('[options] ws://localhost')
    .option('-A, --amount <connections>', 'the amount of persistent connections to generate', parseInt, 10000)
@@ -20,39 +20,47 @@ cli.usage('[options] ws://localhost')
    .option('-B, --buffer <size>', 'size of the messages that are send', parseInt, 1024)
    .option('-W, --workers <cpus>', 'workers to be spawned', parseInt, os.cpus().length)
    .option('-G, --generator <file>', 'custom message generators')
-   .option('-M, --masked', 'send the messaged with a mask')
+   .option('-k, --masked', 'send the messaged with a mask')
    .option('-b, --binary', 'send binary messages instead of utf-8')
-   .version(require('../package.json').version)
-   .parse(process.argv);
+   .version(process.env.version)
+   //.parse(process.argv)
+  
+cli.parse(process.argv);
 
 //
 // Check if all required arguments are supplied, if we don't have a valid url we
 // should bail out
 //
-if (!cli.args.length) return [
-    'Thor:'
-  , 'Odin is disappointed in you... pity human! You forgot to supply the urls.'
-].forEach(function stderr(line) {
-  console.error(line);
-});
+const strErrors = (cli.args.length) ? undefined : [
+    'Thor:\n'
+  , 'Odin is disappointed in you... pity human! You forgot to supply the urls.'];
+if (strErrors) {
+  strErrors.forEach( x =>console.error(x));
+  process.exit(1);
+}
 
 //
 // By Odin's beard, unleash thunder!
 //
-var cluster = require('cluster')
-  , workers = cli.workers || 1
-  , ids = Object.create(null)
-  , concurrents = Object.create(null)
-  , connections = 0
-  , received = 0
-  , robin = [];
+//Cluster.
+Cluster.workers = ( cli.workers || 1 ); 
+//Cluster.ids = Object.create(null)
+Cluster.concurrents = Object.create(null)
+Cluster.connections = 0
+Cluster.received = 0
+Cluster.robin = [];
 
-cluster.setupMaster({
-    exec: path.resolve(__dirname, '../mjolnir.js')
+console.log('CLUSTER!!!!!', path.resolve(__dirname,'../mjolnir.js'));
+console.log('CLUSTER2!!!!!', path.resolve(__dirname,'../mjolnir.js'));
+
+Cluster.setupPrimary({
+   // exec: path.resolve(__dirname, '../mjolnir.js')
+   //TODO: This needs a unit test at least   
+   exec: path.resolve(__dirname, '../mjolnir.js')
   , silent: false
   , args: [
       cli.generator
-      ? path.resolve(process.cwd(), cli.generator)
+      ? path.resolve(__dirname, cli.generator)
       : path.resolve(__dirname, '../generator.js'),
       cli.protocol,
       !!cli.masked,
